@@ -66,12 +66,18 @@ def plot_graph(digraph):
     plt.ylabel('No of Nodes')
     
     
+def find_out_degree(digraph):
+    out_degree_sum = 0 
+    for edge in digraph.values():
+        out_degree_sum+=len(edge)
     
-    
-citation_graph =  load_graph(CITATION_URL)
-Degree_Distribution = in_degree_distribution(citation_graph)
+    return out_degree_sum/len(digraph.keys())
 
-plot_graph(Degree_Distribution)
+citation_graph =  load_graph(CITATION_URL)
+print find_out_degree(citation_graph)
+# Degree_Distribution = in_degree_distribution(citation_graph)
+# 
+# plot_graph(Degree_Distribution)
 
 # 
 
