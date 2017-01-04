@@ -5,8 +5,10 @@ Imports physics citation graph
 """
 
 # general imports
+from __future__ import division
 import urllib2
 import matplotlib.pyplot as plt
+
 # Set timeout for CodeSkulptor if necessary
 #import codeskulptor
 #codeskulptor.set_timeout(20)
@@ -55,29 +57,63 @@ def in_degree_distribution(digraph):
     for degree in in_degree_dist.values():
         count_edges[degree] = in_degree_dist.values().count(degree)
     
+    '''This loop will normalise the degree distribution by doing number_of_nodes_per_degree/total_nodes'''    
+    for degree in count_edges.keys():
+        count_edges[degree] = count_edges[degree]/27770
+        
     return count_edges
 
-def plot_graph(digraph):
+def plot_graph(distribution_dict, title=''):
     '''This graph plots the degree distribution graph with x axis as the edges and y axis 
     as the corresponding nodes with those degrees'''
-    plt.plot(digraph.keys(),digraph.values())
+    coords = dict_to_lists(distribution_dict)
+    plt.loglog(coords[0], coords[1], 'ro')
+    plt.ylabel('Frequency')
+    plt.xlabel('In-degree')
+    plt.grid(True)
+    plt.title(title)
     plt.show()
-    plt.xlabel('In Degrees')
-    plt.ylabel('No of Nodes')
     
     
+def dict_to_lists(input_dict):
+    '''
+    Input is a dictionary whose keys are comparable.
+    The function returns a list with two elements.
+    The first element is the keys of the dictionary, sorted
+    in ascending order. The second element are the the corresponding
+    values. The values are normalized such that sum of all values equals 1.
+    '''
+    keys = sorted(input_dict.keys())
+    values = [input_dict[key] for key in keys]
+    return [normalize(keys), normalize(values)]   
+
+
+
+def normalize(in_list):
+    '''
+    Given a list of numbers, normalize the values in the list so 
+    values in the list sum to 1. 
+`    '''
+    if len(in_list) < 1:
+        return float('nan')
+    divisor = float(sum(in_list))
+    return [element / divisor for element in in_list] 
+
+
+
+
 def find_out_degree(digraph):
-    out_degree_sum = 0 
+    out_degree_sum = 0                                                                                        
     for edge in digraph.values():
         out_degree_sum+=len(edge)
     
     return out_degree_sum/len(digraph.keys())
 
 citation_graph =  load_graph(CITATION_URL)
-print find_out_degree(citation_graph)
-# Degree_Distribution = in_degree_distribution(citation_graph)
-# 
-# plot_graph(Degree_Distribution)
+# print find_out_degree(citation_graph)
+Degree_Distribution = in_degree_distribution(citation_graph)
+
+plot_graph(Degree_Distribution,'Citation Graph in-degree log/log distribution')
 
 # 
 

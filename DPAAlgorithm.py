@@ -7,8 +7,9 @@ of DPA algorithm
 """
 
 # general imports
+from __future__ import division
 import random
-
+from matplotlib import pyplot as plt
 
 class DPATrial:
     """
@@ -75,7 +76,39 @@ def make_complete_graph(num_nodes):
         return complete_connected_graph
     else:
         return complete_connected_graph
+
+def plot_graph(distribution_dict, title=''):
+    '''This graph plots the degree distribution graph with x axis as the edges and y axis 
+    as the corresponding nodes with those degrees'''
+    coords = dict_to_lists(distribution_dict)
+    plt.loglog(coords[0], coords[1], 'ro')
+    plt.ylabel('Frequency')
+    plt.xlabel('In-degree')
+    plt.grid(True)
+    plt.title(title)
+    plt.show()
     
+def in_degree_distribution(digraph):
+    '''This function calulates the indegree distribution for a graph 
+        digraph and returns a dictionary. Keys are 
+        the degree values and values for the number of nodes that have that degree'''
+    in_degree_dist={}
+    for node in digraph.keys():
+        in_degree_dist.setdefault(node,0)
+        for edge in digraph[node]:
+            in_degree_dist[edge] = in_degree_dist.get(edge,0)+1
+    
+    count_edges ={}
+    for degree in in_degree_dist.values():
+        count_edges[degree] = in_degree_dist.values().count(degree)
+    
+    '''This loop will normalise the degree distribution by doing number_of_nodes_per_degree/total_nodes'''    
+    for degree in count_edges.keys():
+        count_edges[degree] = count_edges[degree]/27770
+        
+    return count_edges
+
+ 
 def create_dpa_algorithm(n,m):
     if not m<=n:
         print "The increase in nodes must be less than the final size of the graph\
@@ -83,6 +116,7 @@ def create_dpa_algorithm(n,m):
         exit(-1)
     
     Connected_Graph = make_complete_graph(m)
+#     print Connected_Graph
     dpa_helper = DPATrial(m)
     
     for node in range(m,n):
@@ -91,9 +125,38 @@ def create_dpa_algorithm(n,m):
     
     return Connected_Graph
 
-print create_dpa_algorithm(3,2)
+
+def dict_to_lists(input_dict):
+    '''
+    Input is a dictionary whose keys are comparable.
+    The function returns a list with two elements.
+    The first element is the keys of the dictionary, sorted
+    in ascending order. The second element are the the corresponding
+    values. The values are normalized such that sum of all values equals 1.
+    '''
+    keys = sorted(input_dict.keys())
+    values = [input_dict[key] for key in keys]
+    return [normalize(keys), normalize(values)]   
+
+
+
+def normalize(in_list):
+    '''
+    Given a list of numbers, normalize the values in the list so 
+    values in the list sum to 1. 
+`    '''
+    if len(in_list) < 1:
+        return float('nan')
+    divisor = float(sum(in_list))
+    return [element / divisor for element in in_list] 
+
+
+
+dpa_graph = create_dpa_algorithm(27770, 12)
+in_degree_dpa = in_degree_distribution(dpa_graph)
+plot_graph(in_degree_dpa,'DPA in-degree log/log distribution')
+
     
     
         
     
-# print make_complete_graph(10)
