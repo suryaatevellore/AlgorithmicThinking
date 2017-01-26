@@ -55,7 +55,9 @@ class DPATrial:
         print "This is what the new nodes are intialised to ", new_node_neighbors
         # update the list of node numbers so that each node number 
         # appears in the correct ratio
+        print "node numbers list",self._node_numbers
         self._node_numbers.append(self._num_nodes)
+        print "node numbers after updation",self._node_numbers
         self._node_numbers.extend(list(new_node_neighbors))
         
         #update the number of nodes
@@ -151,12 +153,14 @@ def normalize(in_list):
     return [element / divisor for element in in_list] 
 
 
+# 
+# dpa_graph = create_dpa_algorithm(27770, 12)
+# in_degree_dpa = in_degree_distribution(dpa_graph)
+# plot_graph(in_degree_dpa,'DPA in-degree log/log distribution')
 
-dpa_graph = create_dpa_algorithm(27770, 12)
-in_degree_dpa = in_degree_distribution(dpa_graph)
-plot_graph(in_degree_dpa,'DPA in-degree log/log distribution')
 
-    
+new_node = DPATrial(5)
+print new_node.run_trial(5)    
     
         
     
