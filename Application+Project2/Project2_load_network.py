@@ -433,12 +433,12 @@ LOAD_GRAPH = load_graph(NETWORK_URL)
 # random_graph_resilience = compute_resilience(RANDOM_GRAPH, random_order(RANDOM_GRAPH))
 # load_graph_resilience = compute_resilience(LOAD_GRAPH, random_order(LOAD_GRAPH))
  
-upa_graph_resilience = compute_resilience(UPA_GRAPH, targeted_order(UPA_GRAPH))
-random_graph_resilience = compute_resilience(RANDOM_GRAPH, targeted_order(RANDOM_GRAPH))
-load_graph_resilience = compute_resilience(LOAD_GRAPH, targeted_order(LOAD_GRAPH))
-
-
-# print fast_targeted_order(UPA_GRAPH)
-plot_graph(load_graph_resilience, upa_graph_resilience, random_graph_resilience)
+# upa_graph_resilience = compute_resilience(UPA_GRAPH, targeted_order(UPA_GRAPH))
+# random_graph_resilience = compute_resilience(RANDOM_GRAPH, targeted_order(RANDOM_GRAPH))
+# load_graph_resilience = compute_resilience(LOAD_GRAPH, targeted_order(LOAD_GRAPH))
+# 
+# 
+# # print fast_targeted_order(UPA_GRAPH)
+# plot_graph(load_graph_resilience, upa_graph_resilience, random_graph_resilience)
 
 # print first_among_equals(UPA_GRAPH, RANDOM_GRAPH, LOAD_GRAPH)
