@@ -416,23 +416,23 @@ p = 0.0040
 UPA_GRAPH = create_UPA_graph(N, M)
 RANDOM_GRAPH = generate_random_graph(N, p)
 LOAD_GRAPH = load_graph(NETWORK_URL)
-
+# 
 # print random_order(UPA_GRAPH)
 # print UPA_GRAPH.keys()
 # print UPA_GRAPH
-
+ 
 # old, fast = running_time_target()
 #  
 # print old, fast
 # plot_running_time(old, fast)
-
+ 
 # print "################################################################################"
 # print fast_targeted_order(UPA_GRAPH)
 # 
 # upa_graph_resilience = compute_resilience(UPA_GRAPH, random_order(UPA_GRAPH))
 # random_graph_resilience = compute_resilience(RANDOM_GRAPH, random_order(RANDOM_GRAPH))
 # load_graph_resilience = compute_resilience(LOAD_GRAPH, random_order(LOAD_GRAPH))
- 
+  
 # upa_graph_resilience = compute_resilience(UPA_GRAPH, targeted_order(UPA_GRAPH))
 # random_graph_resilience = compute_resilience(RANDOM_GRAPH, targeted_order(RANDOM_GRAPH))
 # load_graph_resilience = compute_resilience(LOAD_GRAPH, targeted_order(LOAD_GRAPH))
