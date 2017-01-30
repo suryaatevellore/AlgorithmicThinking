@@ -49,10 +49,11 @@ def plot_graph(digraph):
     
     
     
-TRIALS = [ x for x in xrange(1000)]
+TRIALS = [ x for x in xrange(10)]
 
 answer_graph = generate_random_graph(TRIALS, 0.8)
 
+print answer_graph
 Degree_dist =  in_degree_distribution(answer_graph)
 
 plot_graph(Degree_dist)

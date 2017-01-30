@@ -109,9 +109,10 @@ def targeted_order(ugraph):
     """
     Compute a targeted attack order consisting
     of nodes of maximal degree
-    
+    It calculates the maximum degree node and stores the values in the variable max_degree_node
+    It then pops that node out of the graph and removes the edges between the node and its neighbors
     Returns:
-    A list of nodes
+    A list of nodes,order which contains maximum defree nodes in descending order
     """
     # copy the graph
     new_graph = copy_graph(ugraph)
@@ -138,6 +139,49 @@ def targeted_order(ugraph):
 # Code for loading computer network graph
 
 NETWORK_URL = "http://storage.googleapis.com/codeskulptor-alg/alg_rf7.txt"
+
+def fast_targeted_order(uoldgraph):
+    '''Input = Graph g(V,E) with V= {0,1,......,n-1}
+    returns a list of nodes in decreasing prder of their degrees'''
+    #sets the initial value of all the degrees to an empty set
+    
+    #Create a new graph from an old graph
+    ugraph = copy_graph(uoldgraph)
+    
+    
+    DegreeSets = {}
+    for node in range(len(ugraph)):
+        DegreeSets[node]=set([])
+    
+    n = len(ugraph)
+    DegreeSets = [set() for _ in xrange(n)]
+    #calculates degree per node and appends to DegreeSets[degree]
+    #So if a node 5 has degree 1,it's entry would be DegreeSets[1]=[5]
+    for node in ugraph:
+        degree_node = len(ugraph[node])
+        DegreeSets[degree_node].add(node)
+    
+    order = []
+    
+    for degree in range(len(ugraph)-1,-1,-1):
+        while len(DegreeSets[degree]) != 0:
+            max_degree_node = DegreeSets[degree].pop()
+#             print "max_degree_node", max_degree_node
+            neighbors = ugraph[max_degree_node]
+                
+            for neighbor in neighbors:
+#                 print "neighbor", neighbor
+                degree_of_neighbor = len(ugraph[neighbor])
+                DegreeSets[degree_of_neighbor].discard(neighbor)
+                DegreeSets[degree_of_neighbor-1].add(neighbor)
+                ugraph[neighbor].remove(max_degree_node)
+                
+            order.append(max_degree_node)
+                
+            ugraph.pop(max_degree_node,None)
+    
+    return order
+
 
 
 def load_graph(graph_url):
@@ -272,7 +316,7 @@ def random_order(udigraph):
     random.shuffle(shuffled_nodes)
     return shuffled_nodes
 
-def create_UPA_graph(m,n):
+def create_UPA_graph(n, m):
     '''m = number of nodes added per iteration
        n = total number of nodes'''
     
@@ -280,7 +324,6 @@ def create_UPA_graph(m,n):
     upa_helper = UPATrial(m)
     for node in range(m,n):
         adj_list = upa_helper.run_trial(m)
-#         print "adj_list ",node,adj_list
         udigraph[node] = set(adj_list)
         for neighbor in adj_list:
             udigraph[neighbor].add(node)
@@ -327,21 +370,75 @@ def first_among_equals(UPA_GRAPH,RANDOM_GRAPH,LOAD_GRAPH):
         print "RANDOM graph is most resilient"
     else:
         print "LOADED graph is most resilient"
+
+def plot_running_time(targeted_old, targeted_new):
+    '''This function has been created specifically for calculating runningTime vs No. of Nodes graphs
+    for targeted order and fast targeted order. We are unable to combine all plot related functions into one
+    '''
+    targeted_x_axis = xrange(10, 1000, 10)
+    targeted_y_axis = targeted_old
     
+    targeted_new_y_axis = targeted_new
+    plt.plot(targeted_x_axis, targeted_y_axis, label = "targeted order")
+    plt.plot(targeted_x_axis, targeted_new_y_axis, label = "fast targeted order")
+    plt.xlabel("number of nodes")
+    plt.ylabel("running times")
+    plt.title("Running times of targeted order attacks implementations as on Desktop Python2.7")
+    plt.legend(loc='upper right')
+    plt.show()
+    
+def running_time_target():
+    '''This function will calculate the running times for a number of iterations for UPA graphs for 
+    targeted order and the newly implemented fast_targeted_order'''
+    
+    running_time_fast = []
+    running_time = []
+    m = 5
+    for random_n in range(10, 1000, 10):
+        ugraph = create_UPA_graph(random_n, 5)
+        start_time = time.clock()
+        targeted_order(ugraph)
+        running_time.append(time.clock()-start_time)
+        ######################################
+        start_time= time.clock()
+        fast_targeted_order(ugraph)
+        running_time_fast.append(time.clock()-start_time)
+        
+    return running_time, running_time_fast
+
+
+
+
 M = 3 #Number of nodes that must be added in each iteration
 N = 1239 # Only for UPA graph and random graph generation 
 p = 0.0040
 
-UPA_GRAPH = create_UPA_graph(M, N)
+UPA_GRAPH = create_UPA_graph(N, M)
 RANDOM_GRAPH = generate_random_graph(N, p)
 LOAD_GRAPH = load_graph(NETWORK_URL)
+
 # print random_order(UPA_GRAPH)
 # print UPA_GRAPH.keys()
+# print UPA_GRAPH
 
-upa_graph_resilience = compute_resilience(UPA_GRAPH, random_order(UPA_GRAPH))
-random_graph_resilience = compute_resilience(RANDOM_GRAPH, random_order(RANDOM_GRAPH))
-load_graph_resilience = compute_resilience(LOAD_GRAPH, random_order(LOAD_GRAPH))
+# old, fast = running_time_target()
+#  
+# print old, fast
+# plot_running_time(old, fast)
+
+# print "################################################################################"
+# print fast_targeted_order(UPA_GRAPH)
+# 
+# upa_graph_resilience = compute_resilience(UPA_GRAPH, random_order(UPA_GRAPH))
+# random_graph_resilience = compute_resilience(RANDOM_GRAPH, random_order(RANDOM_GRAPH))
+# load_graph_resilience = compute_resilience(LOAD_GRAPH, random_order(LOAD_GRAPH))
  
+upa_graph_resilience = compute_resilience(UPA_GRAPH, targeted_order(UPA_GRAPH))
+random_graph_resilience = compute_resilience(RANDOM_GRAPH, targeted_order(RANDOM_GRAPH))
+load_graph_resilience = compute_resilience(LOAD_GRAPH, targeted_order(LOAD_GRAPH))
+
+
+# print fast_targeted_order(UPA_GRAPH)
 plot_graph(load_graph_resilience, upa_graph_resilience, random_graph_resilience)
 
 # print first_among_equals(UPA_GRAPH, RANDOM_GRAPH, LOAD_GRAPH)
